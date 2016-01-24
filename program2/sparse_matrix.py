@@ -1,10 +1,11 @@
 # Submitter: dparajul(Parajuli, Darshan)
 
+
 class Sparse_Matrix:
     # I've written str(...) because it is used in the bsc.txt file and
-    #   it is a bit subtle to get correct. This function does not depend
-    #   on any other method in this class being written correctly, although
-    #   it could be simplified by writing self[...] which calls __getitem__.   
+    # it is a bit subtle to get correct. This function does not depend
+    # on any other method in this class being written correctly, although
+    # it could be simplified by writing self[...] which calls __getitem__.
     def __str__(self):
         size = str(self.rows) + 'x' + str(self.cols)
         width = max(len(str(self.matrix.get((r, c), 0))) for c in range(self.cols) for r in range(self.rows))
