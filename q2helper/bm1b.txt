@@ -1,0 +1,15 @@
+0
++1
+-10
++102
+1,024
+-10,427,485
+Above should match; below should not (and of course, not this line)
++0
+-0
+05
+1,0
+1,02
+1,,024
+1024
+1024,

@@ -1,0 +1,92 @@
+# Setup
+c-->from imp import reload
+c-->import q2solution
+c-->reload(q2solution)
+c-->from q2solution import future_date, compare_files
+c-->import re
+
+# Read/Test Regular Expression Patterns (read from repattern files)
+c-->p1a = open('repattern1a.txt').read().rstrip()
+c-->print('   ...Testing the pattern p1a: ',p1a)
+
+# The following text should match the pattern
+!=-->re.match(p1a,'6pm')-->None
+!=-->re.match(p1a,'6:23pm')-->None
+!=-->re.match(p1a,'6:23:15am')-->None
+!=-->re.match(p1a,'12am')-->None
+!=-->re.match(p1a,'11:03am')-->None
+!=-->re.match(p1a,'8:40:04pm')-->None
+
+# The following text should NOT match the pattern
+==-->re.match(p1a,'6')-->None
+==-->re.match(p1a,'6 pm')-->None
+==-->re.match(p1a,'06pm')-->None
+==-->re.match(p1a,'14pm')-->None
+==-->re.match(p1a,'6::pm')-->None
+==-->re.match(p1a,'6:60pm')-->None
+==-->re.match(p1a,'6:111pm')-->None
+==-->re.match(p1a,'6:4pm')-->None
+==-->re.match(p1a,'6: 4:pm')-->None
+==-->re.match(p1a,'6:04:7pm')-->None
+==-->re.match(p1a,'6:23:15:23am')-->None
+
+# Read/Test Regular Expression Patterns (read from repattern files)
+c-->p1b = open('repattern1b.txt').read().rstrip()
+c-->print('   ...Testing the pattern p1b: ',p1b)
+
+# The following text should match the pattern
+!=-->re.match(p1b,'0')-->None
+!=-->re.match(p1b,'+1')-->None
+!=-->re.match(p1b,'-10')-->None
+!=-->re.match(p1b,'+102')-->None
+!=-->re.match(p1b,'1,024')-->None
+!=-->re.match(p1b,'-10,427,485')-->None
+
+# The following text should NOT match the pattern
+==-->re.match(p1b,'+0')-->None
+==-->re.match(p1b,'-0')-->None
+==-->re.match(p1b,'05')-->None
+==-->re.match(p1b,'1,0')-->None
+==-->re.match(p1b,'1,02')-->None
+==-->re.match(p1b,'1,,024')-->None
+==-->re.match(p1b,'1024')-->None
+==-->re.match(p1b,'1024,')-->None
+
+# Read/Test Regular Expression Patterns (read from repattern files)
+c-->p2a = open('repattern2a.txt').read().rstrip()
+c-->print('   ...Testing the pattern p2a: ',p2a)
+
+# The following text should match the pattern
+!=-->re.match(p2a,'2/10')-->None
+!=-->re.match(p2a,'2/10/06')-->None
+!=-->re.match(p2a,'12/31/15')-->None
+!=-->re.match(p2a,'12/ 3')-->None
+!=-->re.match(p2a,'12/03')-->None
+!=-->re.match(p2a,'2/31')-->None
+!=-->re.match(p2a,'9/ 4/13')-->None
+
+# The following text should NOT match the pattern
+==-->re.match(p2a,'02/10')-->None
+==-->re.match(p2a,'13/10')-->None
+==-->re.match(p2a,'21/13')-->None
+==-->re.match(p2a,'12/ 13')-->None
+==-->re.match(p2a,'5')-->None
+==-->re.match(p2a,'5/')-->None
+==-->re.match(p2a,'5//')-->None
+==-->re.match(p2a,'5/12/2016')-->None
+==-->re.match(p2a,'')-->None
+
+# Testing future_date
+e-->future_date('12/31',0,2016)-->12/31
+e-->future_date('12/31/16',0,2016)-->12/31/16
+e-->future_date('8/12',5,2016)-->8/17
+e-->future_date('8/12',21,2016)-->9/2
+e-->future_date('12/12/16',25,2016)-->1/6/17
+^-->future_date('5/32',5,2016)-->AssertionError
+^-->future_date('2/30',5,2016)-->AssertionError
+^-->future_date('2/10',-5,2016)-->AssertionError
+
+
+# Testing compare_files
+==-->compare_files(open('cf1a.txt'),open('cf1b.txt'))-->[(2, 'b', 'x'), (4, 'd', '?'), (5, 'e', '?')]
+==-->compare_files(open('cf2a.txt'),open('cf2b.txt'))-->[(1, 'We the People of the United States, in Order', 'We the People of the United States, in order'), (4, 'common defence, promote the general Welfare,', 'common defense, promote the general Welfare,')]

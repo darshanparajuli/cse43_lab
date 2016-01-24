@@ -1,0 +1,61 @@
+# Setup
+c-->from imp import reload
+c-->import q1solution
+c-->reload(q1solution)
+c-->from q1solution import derivative, keys_with, flatten, roster, averages, grades1, grades2, student_view, student_averages
+c-->from goody import irange
+c-->from math import log
+c-->def isclose(a,b,rel_tol,abs_tol=0.): return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)),abs_tol)
+
+# Test derivative/keys_with
+c-->d1 = derivative (lambda x : 3*x**2 + 2*x - 2, .000001)
+c-->d2 = derivative (lambda x : log(x), .000001)
+e-->all([isclose(d1(x),6*x+2,.0001) for x in irange(0,10)])-->True
+e-->all([isclose(d2(x),1/x,.0001) for x in irange(1,10)])-->True
+^-->d1 = derivative (lambda x : 3*x**2 + 2*x - 2, 0.)-->AssertionError
+c-->d1 = {'A':3,'B':2,'C':3,'D':2,'E':2,'F':4,'G':1,'H':4}
+c-->d2 = {'A':1,'B':4,'C':2,'D':3,'E':1,'F':8,'G':3,'H':6,'I':4,'J':1}
+==-->[(v,keys_with(d1)(v)) for v in sorted(set(d1.values()))]-->[(1, {'G'}), (2, {'E', 'D', 'B'}), (3, {'A', 'C'}), (4, {'H', 'F'})]
+==-->[(v,keys_with(d2)(v)) for v in sorted(set(d2.values()))]-->[(1, {'E', 'J', 'A'}), (2, {'C'}), (3, {'G', 'D'}), (4, {'I', 'B'}), (6, {'H'}), (8, {'F'})]
+
+# Test flatten
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->flatten(db1)-->{('ICS-31', 'David', 'C'), ('ICS-31', 'Carol', 'B'), ('Math-3A', 'Alice', 'A'), ('Math-3A', 'Bob', 'B'), ('ICS-31', 'Bob', 'A')}
+==-->flatten(db2)-->{('ICS-31', 'David', 'C'), ('Math-3A', 'Bob', 'B'), ('ICS-31', 'Carol', 'B'), ('ICS-31', 'Bob', 'A'), ('Math-3A', 'David', 'B+'), ('Math-3A', 'Alice', 'A')}
+
+# Test roster
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->roster(db1)-->{'ICS-31': ['Bob', 'Carol', 'David'], 'Math-3A': ['Alice', 'Bob']}
+==-->roster(db2)-->{'ICS-31': ['Bob', 'Carol', 'David'], 'Math-3A': ['Alice', 'Bob', 'David']} 
+
+# Test averages
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->all([isclose(a, {'ICS-31': 3.0, 'Math-3A': 3.5}[c], .0000001) for c,a in averages(db1).items()])-->True
+==-->all([isclose(a, {'ICS-31': 3.0, 'Math-3A': 3.4333333333333336}[c], .0000001) for c,a in averages(db2).items()])-->True
+
+# Test grades1
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->grades1(db1)-->{'ICS-31': [('Bob', 4.0), ('Carol', 3.0), ('David', 2.0)], 'Math-3A': [('Alice', 4.0), ('Bob', 3.0)]}
+==-->grades1(db2)-->{'ICS-31': [('Bob', 4.0), ('Carol', 3.0), ('David', 2.0)], 'Math-3A': [('Alice', 4.0), ('David', 3.3), ('Bob', 3.0)]}
+
+# Test grades2
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B'), ('Zeke','B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+==-->grades2(db1)-->{'ICS-31': ['Bob', 'Carol', 'David'], 'Math-3A': ['Alice', 'Bob']}
+==-->grades2(db2)-->{'ICS-31': ['Bob', 'Carol', 'Zeke', 'David'], 'Math-3A': ['Alice', 'Bob']}
+
+# Test student_view
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->student_view(db1)-->{'Alice': {('Math-3A', 'A')}, 'David': {('ICS-31', 'C')}, 'Bob': {('Math-3A', 'B'), ('ICS-31', 'A')}, 'Carol': {('ICS-31', 'B')}}
+==-->student_view(db2)-->{'Alice': {('Math-3A', 'A')}, 'David': {('ICS-31', 'C'), ('Math-3A', 'B+')}, 'Bob': {('Math-3A', 'B'), ('ICS-31', 'A')}, 'Carol': {('ICS-31', 'B')}}
+
+# Test student_averages
+c-->db1 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A')}} 
+c-->db2 = {'ICS-31': {('Bob', 'A'), ('David', 'C'), ('Carol', 'B')}, 'Math-3A': {('Bob', 'B'), ('Alice', 'A'),('David', 'B+')}} 
+==-->all([isclose(a, {'Alice': 4.0, 'David': 2.0, 'Bob': 3.5, 'Carol': 3.0}[c], .0000001) for c,a in student_averages(db1).items()])-->True
+==-->all([isclose(a, {'Alice': 4.0, 'David': 2.65, 'Bob': 3.5, 'Carol': 3.0}[c], .0000001) for c,a in student_averages(db2).items()])-->True
